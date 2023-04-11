@@ -22,16 +22,23 @@ router.post('/notes', (req, res) => {
             title,
             text
         };
+        fs.readFile(path.join(__dirname, '../db/db.json'), 'utf8', (err, data) => {
+            if (err) {
+                console.error(err);
+                return;
+            } else {
+                const parsedData = JSON.parse(data);
+                parsedData.push(newTitle);
+                fs.writeFile(path.join(__dirname, '../db/db.json'), JSON.stringify(parsedData), err => {
+                    if (err) {
+                        console.error(err);
+                    }
+                })
+            }
+            
+        })
 
-        readAndAppend(newTitle, '../db/db.json');
-        const response = {
-            status: 'success',
-            body: newTitle,
-        };
-
-        res.json(response);
-    } else {
-        res.json('Error')
+        // res.json(response);
     }
 
     console.log(req.body);
